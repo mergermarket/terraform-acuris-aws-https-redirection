@@ -22,19 +22,19 @@ module "https_redirector_container_definition" {
 module "https_redirector_task_definition" {
   source = "github.com/mergermarket/tf_ecs_task_definition"
 
-  family                = "${join("", slice(split("", format("%s-%s", var.env, var.component)), 0, length(format("%s-%s", var.env, var.component)) > 22 ? 23 : length(format("%s-%s", var.env, var.component))))}-https-redirector"
+  family                = "${join("", slice(split("", var.name), 0, length(var.name) > 22 ? 23 : length(var.name)))}-https-redirector"
   container_definitions = ["${module.https_redirector_container_definition.rendered}"]
 }
 
 module "https_redirector_ecs_service" {
   source = "github.com/mergermarket/tf_load_balanced_ecs_service"
 
-  name                 = "${format("%s-%s-https-redirector", var.env, var.component)}"
+  name                 = "${format("%s-https-redirector", var.name)}"
   container_name       = "https-redirector"
   container_port       = "80"
-  vpc_id               = "${var.platform_config["vpc"]}"
+  vpc_id               = "${var.vpc_id}"
   task_definition      = "${module.https_redirector_task_definition.arn}"
-  desired_count        = "${var.env == "live" ? 2 : 1}"
+  desired_count        = "2"
   alb_listener_arn     = "${aws_alb_listener.http.arn}"
   alb_arn              = "${var.alb_arn}"
   health_check_matcher = "300-399"
