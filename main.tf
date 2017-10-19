@@ -29,13 +29,13 @@ module "https_redirector_task_definition" {
 module "https_redirector_ecs_service" {
   source = "github.com/mergermarket/tf_load_balanced_ecs_service"
 
-  name             = "${format("%s-%s-https-redirector", var.env, var.component)}"
-  container_name   = "https-redirector"
-  container_port   = "80"
-  vpc_id           = "${var.platform_config["vpc"]}"
-  task_definition  = "${module.https_redirector_task_definition.arn}"
-  desired_count    = "${var.env == "live" ? 2 : 1}"
-  alb_listener_arn = "${aws_alb_listener.http.arn}"
-  alb_arn          = "${var.alb_arn}"
+  name                 = "${format("%s-%s-https-redirector", var.env, var.component)}"
+  container_name       = "https-redirector"
+  container_port       = "80"
+  vpc_id               = "${var.platform_config["vpc"]}"
+  task_definition      = "${module.https_redirector_task_definition.arn}"
+  desired_count        = "${var.env == "live" ? 2 : 1}"
+  alb_listener_arn     = "${aws_alb_listener.http.arn}"
+  alb_arn              = "${var.alb_arn}"
+  health_check_matcher = "300-399"
 }
-
