@@ -12,7 +12,7 @@ resource "aws_alb_listener" "http" {
 module "https_redirection_container_definition" {
   source = "github.com/mergermarket/tf_ecs_container_definition.git"
 
-  name           = "https-redirector"
+  name           = "https-redirection"
   image          = "mergermarket/https-redirector"
   cpu            = "16"
   memory         = "16"
