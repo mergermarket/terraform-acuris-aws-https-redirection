@@ -4,12 +4,12 @@ resource "aws_alb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = "${module.https_redirector_ecs_service.target_group_arn}"
+    target_group_arn = "${module.https_redirection_ecs_service.target_group_arn}"
     type             = "forward"
   }
 }
 
-module "https_redirector_container_definition" {
+module "https_redirection_container_definition" {
   source = "github.com/mergermarket/tf_ecs_container_definition.git"
 
   name           = "https-redirector"
@@ -19,21 +19,21 @@ module "https_redirector_container_definition" {
   container_port = "80"
 }
 
-module "https_redirector_task_definition" {
+module "https_redirection_task_definition" {
   source = "github.com/mergermarket/tf_ecs_task_definition"
 
-  family                = "${join("", slice(split("", var.name), 0, length(var.name) > 22 ? 23 : length(var.name)))}-https-redirector"
-  container_definitions = ["${module.https_redirector_container_definition.rendered}"]
+  family                = "${join("", slice(split("", var.name), 0, length(var.name) > 22 ? 23 : length(var.name)))}-https-redirection"
+  container_definitions = ["${module.https_redirection_container_definition.rendered}"]
 }
 
-module "https_redirector_ecs_service" {
+module "https_redirection_ecs_service" {
   source = "github.com/mergermarket/tf_load_balanced_ecs_service"
 
-  name                 = "${format("%s-https-redirector", var.name)}"
-  container_name       = "https-redirector"
+  name                 = "${format("%s-https-redirection", var.name)}"
+  container_name       = "https-redirection"
   container_port       = "80"
   vpc_id               = "${var.vpc_id}"
-  task_definition      = "${module.https_redirector_task_definition.arn}"
+  task_definition      = "${module.https_redirection_task_definition.arn}"
   desired_count        = "2"
   alb_listener_arn     = "${aws_alb_listener.http.arn}"
   alb_arn              = "${var.alb_arn}"

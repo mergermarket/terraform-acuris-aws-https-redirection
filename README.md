@@ -15,14 +15,11 @@ Module Input Variables
 Usage
 -----
 ```hcl
-module "alb_test" {
-  source = "github.com/mergermarket/tf_alb"
+module "https_redirection" {
+  source = "github.com/mergermarket/tf_https_redirection"
 
-  # required
-  name                     = "foobar-alb"
-  vpc_id                   = "vpc-2f09a348"
-  subnet_ids               = ["subnet-b46032ec", "subnet-ca4311ef", "subnet-ba881221"]
-  default_target_group_arn = "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-targets/73e2d6bc24d8a067"
-  certificate_domain_name  = "*.acuris.com"
+  name    = "https-redirection"
+  vpc_id  = "vpc-12345678"
+  alb_arn = "arn:aws:elasticloadbalancing:us-east-1:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188"
 }
 ```
