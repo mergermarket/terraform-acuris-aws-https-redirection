@@ -1,5 +1,4 @@
 .terraform
 .cache
 __pycache__
-*.out
 plan.out

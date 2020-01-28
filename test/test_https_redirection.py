@@ -1,11 +1,7 @@
 import json
-import os
 import unittest
 
 from subprocess import check_call, check_output
-
-cwd = os.getcwd()
-
 
 class TestHttpsRedirection(unittest.TestCase):
 
@@ -43,11 +39,9 @@ class TestHttpsRedirection(unittest.TestCase):
         check_call([
             'terraform',
             'plan',
-            '-var', 'env=dev',
-            '-var', 'aws_account_alias=awsaccount',
-            '-var-file=test/platform-config/eu-west-1.json',
             '-out=plan.out',
             '-no-color',
+            '-target=module.https_redirection',
             'test/infra'
         ])
 
@@ -56,3 +50,22 @@ class TestHttpsRedirection(unittest.TestCase):
         # Then
         assert len(resource_changes) == 8
         self.assert_resource_changes_action(resource_changes, 'create', 8)
+        self.assert_resource_changes('all_resources_to_be_created', resource_changes)
+
+    #     # Given When
+    #     check_call([
+    #         'terraform',
+    #         'plan',
+    #         '-var', 'env=dev',
+    #         '-var', 'aws_account_alias=awsaccount',
+    #         '-var-file=test/platform-config/eu-west-1.json',
+    #         '-out=plan.out',
+    #         '-no-color',
+    #         'test/infra'
+    #     ])
+
+    #     resource_changes = self.get_resource_changes()
+
+    #     # Then
+    #     assert len(resource_changes) == 8
+    #     self.assert_resource_changes_action(resource_changes, 'create', 8)

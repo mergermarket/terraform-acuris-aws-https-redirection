@@ -1,0 +1,314 @@
+{
+  "resource_changes": [
+    {
+      "address": "module.https_redirection.aws_alb_listener.http",
+      "module_address": "module.https_redirection",
+      "mode": "managed",
+      "type": "aws_alb_listener",
+      "name": "http",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "certificate_arn": null,
+          "default_action": [
+            {
+              "authenticate_cognito": [],
+              "authenticate_oidc": [],
+              "fixed_response": [],
+              "redirect": [],
+              "type": "forward"
+            }
+          ],
+          "load_balancer_arn": "",
+          "port": 80,
+          "protocol": "HTTP",
+          "timeouts": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "default_action": [
+            {
+              "authenticate_cognito": [],
+              "authenticate_oidc": [],
+              "fixed_response": [],
+              "order": true,
+              "redirect": [],
+              "target_group_arn": true
+            }
+          ],
+          "id": true,
+          "ssl_policy": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.aws_alb_target_group.target_group",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "aws_alb_target_group",
+      "name": "target_group",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "deregistration_delay": 10,
+          "health_check": [
+            {
+              "enabled": true,
+              "healthy_threshold": 2,
+              "interval": 5,
+              "matcher": "300-399",
+              "path": "/internal/healthcheck",
+              "port": "traffic-port",
+              "protocol": "HTTP",
+              "timeout": 4,
+              "unhealthy_threshold": 2
+            }
+          ],
+          "lambda_multi_value_headers_enabled": false,
+          "name": "test-https-redirection",
+          "name_prefix": null,
+          "port": 31337,
+          "protocol": "HTTP",
+          "proxy_protocol_v2": false,
+          "slow_start": 0,
+          "tags": null,
+          "target_type": "instance",
+          "vpc_id": ""
+        },
+        "after_unknown": {
+          "arn": true,
+          "arn_suffix": true,
+          "health_check": [
+            {}
+          ],
+          "id": true,
+          "stickiness": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.aws_ecs_service.service",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "aws_ecs_service",
+      "name": "service",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "capacity_provider_strategy": [],
+          "cluster": "default",
+          "deployment_controller": [],
+          "deployment_maximum_percent": 200,
+          "deployment_minimum_healthy_percent": 100,
+          "desired_count": 2,
+          "enable_ecs_managed_tags": false,
+          "health_check_grace_period_seconds": null,
+          "load_balancer": [
+            {
+              "container_name": "https-redirection",
+              "container_port": 80,
+              "elb_name": ""
+            }
+          ],
+          "name": "test-https-redirection",
+          "network_configuration": [],
+          "ordered_placement_strategy": [
+            {
+              "field": "attribute:ecs.availability-zone",
+              "type": "spread"
+            },
+            {
+              "field": "instanceId",
+              "type": "spread"
+            }
+          ],
+          "placement_constraints": [],
+          "propagate_tags": null,
+          "scheduling_strategy": "REPLICA",
+          "service_registries": [],
+          "tags": null
+        },
+        "after_unknown": {
+          "capacity_provider_strategy": [],
+          "deployment_controller": [],
+          "iam_role": true,
+          "id": true,
+          "launch_type": true,
+          "load_balancer": [
+            {
+              "target_group_arn": true
+            }
+          ],
+          "network_configuration": [],
+          "ordered_placement_strategy": [
+            {},
+            {}
+          ],
+          "placement_constraints": [],
+          "placement_strategy": true,
+          "platform_version": true,
+          "service_registries": [],
+          "task_definition": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.aws_iam_role.role",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "role",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "assume_role_policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": { \"Service\": \"ecs.amazonaws.com\" },\n      \"Effect\": \"Allow\"\n    }\n  ]\n}\n",
+          "description": null,
+          "force_detach_policies": false,
+          "max_session_duration": 3600,
+          "name_prefix": "test-https-redirection",
+          "path": "/",
+          "permissions_boundary": null,
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "create_date": true,
+          "id": true,
+          "name": true,
+          "unique_id": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.aws_iam_role_policy.policy",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "policy",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name_prefix": "test-https-redirection",
+          "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"ec2:AuthorizeSecurityGroupIngress\",\n        \"ec2:Describe*\",\n        \"elasticloadbalancing:DeregisterInstancesFromLoadBalancer\",\n        \"elasticloadbalancing:DeregisterTargets\",\n        \"elasticloadbalancing:Describe*\",\n        \"elasticloadbalancing:RegisterInstancesWithLoadBalancer\",\n        \"elasticloadbalancing:RegisterTargets\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}\n"
+        },
+        "after_unknown": {
+          "id": true,
+          "name": true,
+          "role": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.null_resource.alb_arn",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "alb_arn",
+      "provider_name": "null",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "triggers": {
+            "alb_name": ""
+          }
+        },
+        "after_unknown": {
+          "id": true,
+          "triggers": {}
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_ecs_service.null_resource.alb_listener_arn",
+      "module_address": "module.https_redirection.module.https_redirection_ecs_service",
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "alb_listener_arn",
+      "provider_name": "null",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "id": true,
+          "triggers": true
+        }
+      }
+    },
+    {
+      "address": "module.https_redirection.module.https_redirection_task_definition.aws_ecs_task_definition.taskdef",
+      "module_address": "module.https_redirection.module.https_redirection_task_definition",
+      "mode": "managed",
+      "type": "aws_ecs_task_definition",
+      "name": "taskdef",
+      "provider_name": "aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "container_definitions": "[{\"command\":null,\"cpu\":16,\"dockerLabels\":{},\"environment\":[],\"essential\":true,\"image\":\"mergermarket/https-redirector\",\"linuxParameters\":{\"initProcessEnabled\":true},\"memory\":16,\"mountPoints\":[],\"name\":\"https-redirection\",\"portMappings\":[{\"containerPort\":80}],\"ulimits\":[{\"hardLimit\":65535,\"name\":\"nofile\",\"softLimit\":4096}]}]",
+          "cpu": null,
+          "execution_role_arn": "",
+          "family": "test-https-redirection",
+          "ipc_mode": null,
+          "memory": null,
+          "pid_mode": null,
+          "placement_constraints": [],
+          "proxy_configuration": [],
+          "requires_compatibilities": null,
+          "tags": null,
+          "task_role_arn": "",
+          "volume": [
+            {
+              "docker_volume_configuration": [],
+              "efs_volume_configuration": [],
+              "host_path": "/tmp/dummy_volume",
+              "name": "dummy"
+            }
+          ]
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "network_mode": true,
+          "placement_constraints": [],
+          "proxy_configuration": [],
+          "revision": true,
+          "volume": [
+            {
+              "docker_volume_configuration": [],
+              "efs_volume_configuration": []
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
